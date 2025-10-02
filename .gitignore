@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/react,python,pycharm,visualstudiocode,flask,nextjs
 # Edit at https://www.toptal.com/developers/gitignore?templates=react,python,pycharm,visualstudiocode,flask,nextjs
 
+# Datasets
+data/
+
 ### Flask ###
 instance/*
 !instance/.gitignore
