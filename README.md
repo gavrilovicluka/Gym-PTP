@@ -11,3 +11,11 @@ Dataset used in this project:
 - https://www.kaggle.com/datasets/adnanelouardi/600k-fitness-exercise-and-workout-program-dataset
 
 Once you've cloned the repository and downloaded the dataset files, create a new folder called `data` in the root directory of the repository. This folder will store all the CSV files.
+
+## Starting backend
+Run following command from root folder: 
+```
+uvicorn backend.app.main:app --reload
+```
+
+Server will work on: http://127.0.0.1:8000/docs where you can test API.
