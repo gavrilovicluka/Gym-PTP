@@ -17,7 +17,7 @@ This notebook is located in `notebooks/` folder. It is used for dataset explorat
 Make sure you have the necessary libraries installed: `pip install -r requirements.txt`. \
 Run following command from root folder: 
 ```
-uvicorn ml-service.main:app --reload
+uvicorn ml-service.main:app --reload --port 8001
 ```
 
-The ML prediction service will be running at: http://127.0.0.1:8000/. You can test the API endpoints and view the documentation (Swagger UI) at http://127.0.0.1:8000/docs.
+The ML prediction service will be running at: http://127.0.0.1:8001/. You can test the API endpoints and view the documentation (Swagger UI) at http://127.0.0.1:8001/docs.
