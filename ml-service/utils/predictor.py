@@ -1,8 +1,7 @@
 import numpy as np
 import pandas as pd
-import os
 from .loader import load_artifacts
-from .scoring import overlap_score, numeric_similarity, WEIGHTS
+from .scoring import get_programs_with_score
 from .normalize_words import normalize_words
 
 artifacts = load_artifacts()
@@ -14,11 +13,7 @@ scaler = artifacts["scaler"]
 equipment_cols = artifacts["equipment_cols"]
 X_columns_loaded = artifacts["X_columns_loaded"]
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(BASE_DIR, '..', 'model/programs_clean.csv')
-program_summary_df = pd.read_csv(DATA_PATH)
-
-def predict(goals, levels, equipment, program_length, time_per_workout, top_k=3):
+def predict(goals, levels, equipment, program_length, time_per_workout):
     # Encode user input
     levels = normalize_words(levels)
     goals = normalize_words(goals)
@@ -36,29 +31,6 @@ def predict(goals, levels, equipment, program_length, time_per_workout, top_k=3)
     distances, indices = knn.kneighbors(user_X_df)
     top_programs = le.inverse_transform(indices[0])
 
-    scored_programs = []
-    for i, prog_name in enumerate(top_programs):
-        prog_row = program_summary_df[program_summary_df['title'] == prog_name].iloc[0]
-        knn_score = 1 / (1 + distances[0][i])
-
-        score_goal = overlap_score(goals, prog_row['goal'])
-        score_level = overlap_score(levels, prog_row['level'])
-        score_equipment = overlap_score(equipment, [prog_row['equipment']])
-        score_length = numeric_similarity(program_length, prog_row['program_length_orig'])
-        score_time = numeric_similarity(time_per_workout, prog_row['time_per_workout_orig'])
-        
-        total_score = (
-            WEIGHTS['knn'] * knn_score +
-            WEIGHTS['goal'] * score_goal +
-            WEIGHTS['level'] * score_level +
-            WEIGHTS['equipment'] * score_equipment +
-            WEIGHTS['program_length'] * score_length +
-            WEIGHTS['time_per_workout'] * score_time
-        )
-
-        scored_programs.append({
-            "program": prog_name,
-            "total_score": total_score
-        })
+    scored_programs = get_programs_with_score(top_programs, distances, goals, levels, equipment, program_length, time_per_workout)
 
     return sorted(scored_programs, key=lambda x: x["total_score"], reverse=True)
