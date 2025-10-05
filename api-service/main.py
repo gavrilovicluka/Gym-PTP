@@ -1,10 +1,11 @@
+import os
 from fastapi import FastAPI
 from pydantic import BaseModel
 import requests
 
 app = FastAPI(title="Gym Planner API Service")
 
-ML_SERVICE_URL = "http://localhost:8001"
+ML_SERVICE_URL = os.getenv("ML_SERVICE_URL", "http://localhost:8001")
 
 class UserInput(BaseModel):
     goals: list[str]
